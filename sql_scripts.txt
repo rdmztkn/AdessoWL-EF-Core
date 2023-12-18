@@ -1,0 +1,127 @@
+use AdessoWL
+go
+
+create table dbo.Countries
+(
+    id   int identity
+        constraint pk_countries_id
+            primary key,
+    name varchar(100)
+)
+go
+
+INSERT INTO AdessoWL.dbo.Countries (name) VALUES (N'Türkiye');
+INSERT INTO AdessoWL.dbo.Countries (name) VALUES (N'Almanya');
+INSERT INTO AdessoWL.dbo.Countries (name) VALUES (N'Fransa');
+INSERT INTO AdessoWL.dbo.Countries (name) VALUES (N'Hollanda');
+INSERT INTO AdessoWL.dbo.Countries (name) VALUES (N'Portekiz');
+INSERT INTO AdessoWL.dbo.Countries (name) VALUES (N'Italya');
+INSERT INTO AdessoWL.dbo.Countries (name) VALUES (N'Ispanya');
+INSERT INTO AdessoWL.dbo.Countries (name) VALUES (N'Belçika');
+
+Select * From Countries
+
+----------------------------------------------
+
+use AdessoWL
+go
+
+create table dbo.Teams
+(
+    id        int identity
+        primary key,
+    name      varchar(100),
+    CountryId int
+        constraint fk_teams_country_id
+            references dbo.Countries
+)
+go
+
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES ('Adesso Istanbul', 1);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES ('Adesso Ankara', 1);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES ('Adesso Izmir', 1);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES ('Adesso Antalya', 1);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES ('Adesso Berlin', 2);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES ('Adesso Frankfurt', 2);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES ('Adesso Münih', 2);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES ('Adesso Dortmund', 2);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES ('Adesso Paris', 3);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Marsilya', 3);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Nice', 3);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Lyon', 3);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Amsterdam', 4);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Rotterdam', 4);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Lahey', 4);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Eindhoven', 4);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Lisbon', 5);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Porto', 5);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Braga', 5);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Coimbra', 5);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Roma', 6);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Milano', 6);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Venedik', 6);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Napoli', 6);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Sevilla', 7);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Madrid', 7);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Barselona', 7);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Granada', 7);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Brüksel', 8);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Brugge', 8);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Gent', 8);
+INSERT INTO AdessoWL.dbo.Teams (name, CountryId) VALUES (N'Adesso Anvers', 8);
+
+Select * From Teams
+
+----------------------------------------------
+
+use AdessoWL
+go
+
+create table dbo.Draws
+(
+    Id          int identity
+        primary key,
+    FirstName   varchar(100),
+    LastName    varchar(100),
+    CreatedDate datetime2 default getdate()
+)
+go
+
+----------------------------------------------
+
+use AdessoWL
+go
+
+create table dbo.Draw_Groups
+(
+    Id        int identity
+        primary key,
+    GroupName char,
+    DrawId    int
+        constraint fk_draw_Group_draw_id
+            references dbo.Draws
+)
+go
+
+----------------------------------------------
+
+use AdessoWL
+go
+
+create table dbo.Draw_Teams
+(
+    Id      int identity
+        primary key,
+    TeamId  int,
+    GroupId int
+        constraint fk_Draw_Teams_group_id
+            references dbo.Draw_Groups
+			)
+go
+
+----------------------------------------------
+
+select a.FirstName, a.LastName, b.GroupName, d.name from Draws a
+inner join Draw_Groups b on a.Id = b.DrawId
+inner join Draw_Teams c on c.GroupId = b.Id
+inner join Teams d on c.TeamId = d.id 
